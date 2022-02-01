@@ -1,3 +1,6 @@
+The project was originally written by Stephen Victor.
+References: https://dev.to/stevensunflash/real-world-app-with-golang-gin-and-react-hooks-44ph
+
 The following packages are being used for the project.
 
 go get github.com/badoux/checkmail
