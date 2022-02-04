@@ -127,3 +127,41 @@ func (c *Comment) DeletePostComments(db *gorm.DB, pid uint64) (int64, error) {
 	}
 	return db.RowsAffected, nil
 }
+
+func minimumNumber(n int32, password string) int32 {
+	// Return the minimum number of characters to make the password strong
+	numbers := "0123456789"
+	lowerCase := "abcdefghijklmnopqrstuvwxyz"
+	upperCase := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	specialCharacters := "!@#$%^&*()-+"
+	count := int32(0)
+	countM := int32(0)
+	for i:=0; i<len(password); i++ {
+		if strings.Contains(numbers, string(password[i])) {
+			count+=1
+		} else {
+			countM += 1
+		}
+		if strings.Contains(lowerCase, string(password[i])) {
+			count+=1
+		} else {
+			countM += 1
+		}
+		if strings.Contains(upperCase, string(password[i])) {
+			count+=1
+		} else {
+			countM += 1
+		}
+		if strings.Contains(specialCharacters, string(password[i])) {
+			count+=1
+		} else {
+			countM += 1
+		}
+		if count < 6  {
+			return 6 - count
+		} else {
+
+		}
+	}
+		return n - count
+}

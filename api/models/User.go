@@ -4,7 +4,8 @@ import (
 	"errors"
 	"github.com/badoux/checkmail"
 	"github.com/jinzhu/gorm"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/toluwase1/forum-system/api/security"
+	_ "golang.org/x/crypto/bcrypt"
 	"html"
 	"log"
 	"os"
@@ -21,23 +22,32 @@ type User struct {
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
-func (u *User) BeforeSave () (string, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), 14)
-	if err != nil {
-		return "", err
-	}
-	u.Password = string(hashedPassword)
-	return u.Password, nil
-}
-
-func (u *User) BeforeSave1 ()  error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), 14)
+func (u *User) BeforeSave() error {
+	hashedPassword, err := security.Hash(u.Password)
 	if err != nil {
 		return err
 	}
 	u.Password = string(hashedPassword)
 	return nil
 }
+
+//func (u *User) BeforeSave () (string, error) {
+//	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), 14)
+//	if err != nil {
+//		return "", err
+//	}
+//	u.Password = string(hashedPassword)
+//	return u.Password, nil
+//}
+//
+//func (u *User) BeforeSave1 ()  error {
+//	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), 14)
+//	if err != nil {
+//		return err
+//	}
+//	u.Password = string(hashedPassword)
+//	return nil
+//}
 
 func (u *User) Prepare() {
 	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
@@ -169,8 +179,8 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 
 	if u.Password != "" {
 		// To hash the password
-		err, _ := u.BeforeSave()
-		if err != "" {
+		err := u.BeforeSave()
+		if err != nil {
 			log.Fatal(err)
 		}
 
@@ -232,8 +242,8 @@ func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
 
 func (u *User) UpdatePassword(db *gorm.DB) error {
 	// To hash the password
-	err, _ := u.BeforeSave()
-	if err != "" {
+	err := u.BeforeSave()
+	if err != nil {
 		log.Fatal(err)
 	}
 
