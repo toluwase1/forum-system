@@ -61,7 +61,7 @@ func (s *sendMail) SendResetPassword(ToUser string, FromAdmin string, Token stri
 	if err != nil {
 		return nil, err
 	}
-	from := mail.NewEmail("SeamFlow", FromAdmin)
+	from := mail.NewEmail("Go Forum", FromAdmin)
 	subject := "Reset Password"
 	to := mail.NewEmail("Reset Password", ToUser)
 	message := mail.NewSingleEmail(from, subject, to, emailBody, emailBody)
